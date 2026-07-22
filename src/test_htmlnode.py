@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from htmlnode import HTMLNode, LeafNode, ParentNode, markdown_to_blocks
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -48,6 +48,41 @@ class TestHTMLNode(unittest.TestCase):
         parent_node = ParentNode("div", [])
         with self.assertRaises(ValueError):
             parent_node.to_html()
+    
+        def test_markdown_to_blocks(self):
+            md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+            blocks = markdown_to_blocks(md)
+            self.assertEqual(
+                blocks,
+                [
+                    "This is **bolded** paragraph",
+                    "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                    "- This is a list\n- with items",
+                ],
+            )
+    
+    def test_markdown_to_blocks_with_empty_lines(self):
+        md = ""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, [])
+    
+    def test_markdown_to_blocks_with_only_newlines(self):
+        md = "\n\n\n"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, [])
+    
+    def test_markdown_to_blocks_with_leading_trailing_newlines(self):
+        md = "\n\nThis is a block\n\n"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, ["This is a block"])
 
 if __name__ == "__main__":
     unittest.main()

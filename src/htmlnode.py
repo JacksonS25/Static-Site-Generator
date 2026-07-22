@@ -48,3 +48,15 @@ class ParentNode(HTMLNode):
     
     def __repr__(self):
         return f"HTMLNode(tag={self.tag}, children={self.children}, props={self.props})"
+
+def markdown_to_blocks(markdown: str) -> list[str]:
+    """
+    Splits the markdown string into blocks based on double newlines.
+
+    Args:
+        markdown (str): The markdown string to be split.
+
+    Returns:
+        list[str]: A list of blocks.
+    """
+    return [block.strip() for block in markdown.split("\n\n") if block.strip()]
