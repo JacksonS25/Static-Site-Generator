@@ -182,11 +182,13 @@ def text_to_textnodes(text: str) -> list[TextNode]:
         list[TextNode]: A list of TextNode objects representing the input text.
     """
     node = TextNode(text, TextType.TEXT)
+        
     new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
     new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
     new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
     new_nodes = split_nodes_image(new_nodes)
     new_nodes = split_nodes_link(new_nodes)
+
     for node in new_nodes:
         if node.text_type == TextType.TEXT and node.text.strip() == "":
             new_nodes.remove(node)
