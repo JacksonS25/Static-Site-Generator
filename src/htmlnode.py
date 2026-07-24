@@ -60,3 +60,18 @@ def markdown_to_blocks(markdown: str) -> list[str]:
         list[str]: A list of blocks.
     """
     return [block.strip() for block in markdown.split("\n\n") if block.strip()]
+
+def extract_title(markdown: str) -> str:
+    """
+    Extracts the title from the markdown string. The title is assumed to be the first line.
+
+    Args:
+        markdown (str): The markdown string.
+
+    Returns:
+        str: The extracted title.
+    """
+    if markdown.startswith("#"):
+        return markdown.split("\n")[0].lstrip("#").strip()
+    
+    raise Exception("No title found in the markdown. Title should be the first line starting with '#'.")
