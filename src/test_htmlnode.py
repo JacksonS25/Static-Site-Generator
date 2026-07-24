@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode, LeafNode, ParentNode, markdown_to_blocks
+from htmlnode import HTMLNode, LeafNode, ParentNode, markdown_to_blocks, extract_title
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -83,6 +83,12 @@ This is the same paragraph on a new line
         md = "\n\nThis is a block\n\n"
         blocks = markdown_to_blocks(md)
         self.assertEqual(blocks, ["This is a block"])
+
+    def test_extract_title(self):
+        md = """# This is the title
+This is some content."""
+        title = extract_title(md)
+        self.assertEqual(title, "This is the title")
 
 if __name__ == "__main__":
     unittest.main()
