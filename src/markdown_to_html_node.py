@@ -22,8 +22,9 @@ def markdown_to_html_node(markdown: str) -> HTMLNode:
         
         if block_type == BlockType.HEADING:
             # Assuming the heading level is determined by the number of '#' characters
+            text_nodes = text_to_textnodes(block.strip('# '))
             level = len(block.split(' ')[0])  # Count '#' characters
-            children.append(LeafNode(tag=f"h{level}", value=block.strip('# ')))
+            children.append(ParentNode(tag=f"h{level}", children=[node.text_node_to_html_node() for node in text_nodes]))
         elif block_type == BlockType.PARAGRAPH:
             text_nodes = text_to_textnodes(block.replace("\n", " "))
             children.append(ParentNode(tag="p", children=[node.text_node_to_html_node() for node in text_nodes]))
@@ -39,7 +40,8 @@ def markdown_to_html_node(markdown: str) -> HTMLNode:
             block = block.strip("```\n")
             children.append(ParentNode(tag="pre", children=[LeafNode(tag="code", value=f"{block}\n")]))
         elif block_type == BlockType.QUOTE:
-            children.append(ParentNode(tag="blockquote", children=[node.text_node_to_html_node() for node in text_to_textnodes(block)]))
+            stripped_block = block.replace("> ", "").replace(">\n", "")
+            children.append(ParentNode(tag="blockquote", children=[node.text_node_to_html_node() for node in text_to_textnodes(stripped_block)]))
         
 
         

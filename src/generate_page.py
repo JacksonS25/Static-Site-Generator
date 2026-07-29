@@ -24,9 +24,8 @@ def generate_page(from_path, template_path, dest_path):
 
     # Convert the markdown content to an HTMLNode
     html_node = markdown_to_html_node(content)
-    print(html_node)
     html = html_node.to_html()
-    title = extract_title(content)
+    title = htmlnode.extract_title(content)
     # Apply the template
     final_html = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
 
@@ -37,3 +36,11 @@ def generate_page(from_path, template_path, dest_path):
 
     with open(dest_path, "w") as f:
         f.write(final_html)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    list_of_contents = os.listdir(dir_path_content)
+    for content in list_of_contents:
+        if os.path.isfile(f"{dir_path_content}/{content}"):
+            generate_page(f"{dir_path_content}/{content}", template_path, f"{dest_dir_path}/{content.strip(".md")}.html")
+        else:
+            generate_pages_recursive(f"{dir_path_content}/{content}", template_path, f"{dest_dir_path}/{content}")
