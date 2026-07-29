@@ -3,7 +3,7 @@ import htmlnode
 import os
 from pathlib import Path
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, base_path):
     """
     Generates a page by reading content from a source file, applying a template, and writing the result to a destination file.
 
@@ -27,7 +27,7 @@ def generate_page(from_path, template_path, dest_path):
     html = html_node.to_html()
     title = htmlnode.extract_title(content)
     # Apply the template
-    final_html = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
+    final_html = template.replace("{{ Title }}", title).replace("{{ Content }}", html).replace('href="/', f'href="{base_path}').replace('src="/', f'src="{base_path}')
 
     # Write the generated HTML to the destination file
     file_path = Path(dest_path)
@@ -37,10 +37,10 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w") as f:
         f.write(final_html)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, base_path):
     list_of_contents = os.listdir(dir_path_content)
     for content in list_of_contents:
         if os.path.isfile(f"{dir_path_content}/{content}"):
-            generate_page(f"{dir_path_content}/{content}", template_path, f"{dest_dir_path}/{content.strip(".md")}.html")
+            generate_page(f"{dir_path_content}/{content}", template_path, f"{dest_dir_path}/{content.strip(".md")}.html", base_path)
         else:
-            generate_pages_recursive(f"{dir_path_content}/{content}", template_path, f"{dest_dir_path}/{content}")
+            generate_pages_recursive(f"{dir_path_content}/{content}", template_path, f"{dest_dir_path}/{content}", base_path)
